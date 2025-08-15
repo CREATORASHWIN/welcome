@@ -1,0 +1,85 @@
+<!-- Login Section -->
+<div *ngIf="!loggedIn" class="login-container">
+  <h2>Select Profile</h2>
+  <div class="profile-list">
+    <div
+      class="profile-button"
+      [class.selected]="selectedProfile === 'HB'"
+      (click)="selectProfile('HB')"
+    >
+      <img src="female.png" alt="HB" />
+      <span>HB</span>
+    </div>
+    <div
+      class="profile-button"
+      [class.selected]="selectedProfile === 'KEERIPULLAA'"
+      (click)="selectProfile('KEERIPULLAA')"
+    >
+      <img src="male.png" alt="KEERIPULLAA" />
+      <span>KEERIPULLAA</span>
+    </div>
+  </div>
+  <div class="password-container">
+    <input type="password" [(ngModel)]="passwordInput" placeholder="Enter password" />
+    <button (click)="login()">Login</button>
+  </div>
+</div>
+
+<!-- Chat Section -->
+<div *ngIf="loggedIn" class="chat-container">
+  <!-- Header -->
+  <div class="chat-header">
+    <img [src]="selectedProfile === 'HB' ? 'female.png' : 'male.png'" alt="{{ selectedProfile }}" />
+    <h2>Chat with {{ selectedProfile === 'HB' ? 'KEERIPULLAA' : 'HB' }}</h2>
+  </div>
+
+  <!-- Messages -->
+  <div class="messages" #messagesContainer>
+    <div
+      *ngFor="let msg of messages"
+      [ngClass]="{
+        'message': true,
+        'from-me': msg.from === username,
+        'from-them': msg.from !== username
+      }"
+    >
+      <img [src]="msg.pic" class="msg-pic" />
+      <div class="text">
+        <div *ngIf="msg.text">{{ msg.text }}</div>
+        <img *ngIf="msg.fileType === 'image'" [src]="msg.fileUrl" class="chat-image" />
+        <audio *ngIf="msg.fileType === 'audio'" [src]="msg.fileUrl" controls></audio>
+        <a
+          *ngIf="msg.fileType === 'document'"
+          [href]="msg.fileUrl"
+          target="_blank"
+          class="file-link"
+        >
+          {{ msg.fileName }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message Composer -->
+  <div class="composer">
+    <input
+      type="text"
+      [(ngModel)]="newMessage"
+      (keydown.enter)="sendMessage()"
+      placeholder="Type a message..."
+    />
+    <button type="button" (click)="toggleEmoji()">😊</button>
+    <button type="button" (click)="sendMessage()" [disabled]="!newMessage.trim()">Send</button>
+  </div>
+
+  <!-- Emoji Picker -->
+  <div class="emoji-container" *ngIf="emojiOpen">
+    <emoji-mart 
+      (emojiSelect)="addEmoji($event)" 
+      [set]="'apple'" 
+      [perLine]="15"
+      [showPreview]="false"
+      [showSkinTones]="false"
+    ></emoji-mart>
+  </div>
+</div>
