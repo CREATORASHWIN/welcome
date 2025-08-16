@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { ChatService, Message } from './services/chat.service';
+import { environment } from '../environments/environment';  // optional: for API URL
 
 type ProfileKey = 'HB' | 'KEERIPULLAA';
 
@@ -69,7 +70,6 @@ export class AppComponent {
         pic: this.getProfilePic(msg.from),
         seenBy: msg.seenBy || [],
       }));
-
       this.markMessagesSeen();
       this.scrollToBottom();
     });
@@ -104,15 +104,11 @@ export class AppComponent {
   }
 
   scrollToBottom() {
-    try {
-      setTimeout(() => {
-        if (this.messagesContainer)
-          this.messagesContainer.nativeElement.scrollTop =
-            this.messagesContainer.nativeElement.scrollHeight;
-      }, 50);
-    } catch (err) {
-      console.error('Scroll error:', err);
-    }
+    setTimeout(() => {
+      if (this.messagesContainer)
+        this.messagesContainer.nativeElement.scrollTop =
+          this.messagesContainer.nativeElement.scrollHeight;
+    }, 50);
   }
 
   markMessagesSeen() {
